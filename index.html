@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Для тебя 💌</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, #fff 0, transparent 25%),
+        linear-gradient(135deg, #ffd6e3, #ffeef4, #ffd1df);
+    }
+    .hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .heart {
+      position: absolute;
+      bottom: -40px;
+      font-size: 22px;
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: .8;
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    .card {
+      position: relative;
+      z-index: 5;
+      width: min(90%, 390px);
+      padding: 38px 28px;
+      text-align: center;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(15px);
+      border-radius: 30px;
+      box-shadow:
+        0 20px 60px rgba(190, 70, 110, .20),
+        inset 0 0 0 1px rgba(255,255,255,.8);
+      animation: appear .8s ease;
+    }
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(25px) scale(.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .emoji {
+      font-size: 55px;
+      margin-bottom: 10px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.12);
+      }
+    }
+    h1 {
+      margin: 0 0 15px;
+      color: #e83f69;
+      font-size: 27px;
+      line-height: 1.2;
+    }
+    p {
+      margin: 0;
+      color: #666;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .buttons {
+      position: relative;
+      height: 80px;
+      margin-top: 28px;
+    }
+    button {
+      border: 0;
+      border-radius: 50px;
+      padding: 14px 25px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .yes {
+      color: white;
+      background: linear-gradient(135deg, #ff4772, #e82e5c);
+      box-shadow: 0 8px 20px rgba(232, 46, 92, .3);
+    }
+    .yes:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 25px rgba(232, 46, 92, .4);
+    }
+    .no {
+      position: absolute;
+      left: 55%;
+      top: 5px;
+      color: #555;
+      background: #eee;
+    }
+    .success {
+      animation: appear .7s ease;
+    }
+    .success h1 {
+      font-size: 32px;
+    }
+    .small {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #999;
+    }
+    .sparkle {
+      display: inline-block;
+      animation: sparkle 1.2s infinite alternate;
+    }
+    @keyframes sparkle {
+      from {
+        transform: rotate(-8deg) scale(1);
+      }
+      to {
+        transform: rotate(8deg) scale(1.2);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <div class="card" id="card">
+    <div class="emoji">💌</div>
+    <h1>У меня к тебе один вопрос...</h1>
+    <p>
+      Ты пойдёшь со мной на свидание? 🥹
+      <br><br>
+      Говорят, сайт <b>svidus.ru</b> зафиксировал
+      <b>100% совпадение</b>. ❤️
+      <br>
+      Так что, кажется, нам просто необходимо
+      провести один очень хороший вечер вместе. ✨
+    </p>
+    <div class="buttons">
+      <button class="yes" onclick="accepted()">
+        ДА! 💖
+      </button>
+      <button class="no" id="noBtn">
+        Нет 🙈
+      </button>
+    </div>
+    <div class="small">
+      P.S. неправильного ответа здесь нет... 😌
+    </div>
+  </div>
+  <script>
+    // =========================
+    // Плавающие сердечки
+    // =========================
+    const hearts = document.getElementById("hearts");
+    const heartSymbols = ["💗", "💕", "💖", "💘", "💝", "♡"];
+    for (let i = 0; i < 25; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML =
+        heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + "%";
+      heart.style.animationDuration =
+        (6 + Math.random() * 8) + "s";
+      heart.style.animationDelay =
+        Math.random() * 8 + "s";
+      heart.style.fontSize =
+        (14 + Math.random() * 22) + "px";
+      hearts.appendChild(heart);
+    }
+    // =========================
+    // Убегающая кнопка "Нет"
+    // =========================
+    const noBtn = document.getElementById("noBtn");
+    function moveButton() {
+      const padding = 20;
+      const buttonWidth = noBtn.offsetWidth;
+      const buttonHeight = noBtn.offsetHeight;
+      const maxX =
+        window.innerWidth - buttonWidth - padding;
+      const maxY =
+        window.innerHeight - buttonHeight - padding;
+      const x =
+        padding + Math.random() * Math.max(0, maxX - padding);
+      const y =
+        padding + Math.random() * Math.max(0, maxY - padding);
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+    noBtn.addEventListener("mouseenter", moveButton);
+    noBtn.addEventListener("touchstart", function(e) {
+      e.preventDefault();
+      moveButton();
+    });
+    // =========================
+    // Нажали "ДА"
+    // =========================
+    function accepted() {
+      const card = document.getElementById("card");
+      card.innerHTML = `
+        <div class="success">
+          <div class="emoji">🥹💖</div>
+          <h1>Урааа! 🎉</h1>
+          <p>
+            Я знала, что ты согласишься! 😌
+            <br><br>
+            Теперь осталось только выбрать
+            <b>время и место</b> нашего свидания.
+            ✨
+          </p>
+          <br>
+          <p>
+            Жду тебя в ЛС 💌
+          </p>
+          <div class="small">
+            Наш вечер уже официально запланирован. 💕
+          </div>
+        </div>
+      `;
+      createCelebration();
+    }
+    // =========================
+    // Праздничный взрыв сердечек
+    // =========================
+    function createCelebration() {
+      for (let i = 0; i < 40; i++) {
+        const heart = document.createElement("div");
+        heart.innerHTML = "💖";
+        heart.style.position = "fixed";
+        heart.style.left = "50%";
+        heart.style.top = "50%";
+        heart.style.fontSize =
+          (15 + Math.random() * 25) + "px";
+        heart.style.zIndex = "100";
+        document.body.appendChild(heart);
+        const angle =
+          Math.random() * Math.PI * 2;
+        const distance =
+          100 + Math.random() * 300;
+        const x =
+          Math.cos(angle) * distance;
+        const y =
+          Math.sin(angle) * distance;
+        heart.animate(
+          [
+            {
+              transform: "translate(-50%, -50%) scale(0)",
+              opacity: 1
+            },
+            {
+              transform:
+                `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1.5)`,
+              opacity: 0
+            }
+          ],
+          {
+            duration: 1200 + Math.random() * 800,
+            easing: "cubic-bezier(.2,.8,.2,1)"
+          }
+        );
+        setTimeout(() => {
+          heart.remove();
+        }, 2200);
+      }
+    }
+  </script>
+</body>
+</html>
